@@ -1,0 +1,988 @@
+{
+  "vocabTerms": [
+    {
+      "description": "Призвав этого бойца, получите бонус за верность, если верхняя карта в вашей колоде принадлежит к тому же региону.",
+      "name": "Верность",
+      "nameRef": "Allegiance"
+    },
+    {
+      "description": "При призывании автоматически снаряжается этим предметом из руки или с поля боя. Создает его при необходимости.",
+      "name": "Авто-снаряжение",
+      "nameRef": "AutoEquip"
+    },
+    {
+      "description": "Выберите следующее Лунное оружие для Афелия.",
+      "name": "Фаза",
+      "nameRef": "Phase"
+    },
+    {
+      "description": "Создайте случайный Осколок клинка из числа недостающих. Сыграв все 3 Осколка, создайте Клинок Изгнанницы.",
+      "name": "Перековка",
+      "nameRef": "Reforge"
+    },
+    {
+      "description": "Скрытно превращается в другого бойца перед входом на поле боя. Ваш оппонент не может идентифицировать такие карты, пока они не покинут поле боя или не повысят свой уровень.",
+      "name": "Маскировка",
+      "nameRef": "Disguise"
+    },
+    {
+      "description": "Сразу вытяните из колоды по 1 экз. каждого вознесшегося союзника. До конца матча ваши вознесшиеся союзники 2-го уровня получают 3-й уровень.",
+      "name": "Восстановить Солнечный диск",
+      "nameRef": "SunDiscRestore"
+    },
+    {
+      "description": "Создайте Снежок среди 2–6 верхних карт в вашей колоде.",
+      "name": "Снежный ком",
+      "nameRef": "Snowshape"
+    },
+    {
+      "description": "Срабатывает, когда боец наносит удар во время атаки",
+      "name": "Удар во время атаки",
+      "nameRef": "AttackStrike"
+    },
+    {
+      "description": "За каждое Порождение:\nпризовите Щупальце с 1|1. Если у вас уже есть Щупальца, даруйте сильнейшему из них +1|+1.",
+      "name": "Порождение",
+      "nameRef": "Spawn"
+    },
+    {
+      "description": "Боец с самым высоким показателем силы. Если у двух или более бойцов эти показатели равны, сравнивается здоровье, а затем – стоимость.",
+      "name": "Сильнейший",
+      "nameRef": "Strongest"
+    },
+    {
+      "description": "Уничтожьте снизу колоды последние X карт, которые не являются чемпионами.",
+      "name": "Бросок",
+      "nameRef": "Toss"
+    },
+    {
+      "description": "Отправляет обозначенное количество Клинков в самостоятельную атаку.",
+      "name": "Танец с клинками",
+      "nameRef": "BladeDance"
+    },
+    {
+      "description": "Владеть – значит иметь нужную карту в руке или на игровом поле.",
+      "name": "Владение",
+      "nameRef": "Behold"
+    },
+    {
+      "description": "Уничтожьте энное количество карт наверху вражеской колоды, активируя для них любую ловушку.",
+      "name": "Ужас",
+      "nameRef": "Terrify"
+    },
+    {
+      "description": "На сколько уровней вперед можно заглядывать в приключениях.",
+      "name": "Дальновидность",
+      "nameRef": "Vision"
+    },
+    {
+      "description": "Столько единиц маны нужно потратить, чтобы разыграть эту карту.",
+      "name": "Стоимость",
+      "nameRef": "Cost"
+    },
+    {
+      "description": "Этот эффект сработает, когда закончится раунд.",
+      "name": "Конец раунда",
+      "nameRef": "RoundEnd"
+    },
+    {
+      "description": "Бойцы с силой или здоровьем 8+",
+      "name": "Титанический",
+      "nameRef": "Titanic"
+    },
+    {
+      "description": "Полное удаление из игры. Предсмертный вздох не срабатывает, воскресить невозможно.",
+      "name": "Уничтожение",
+      "nameRef": "Obliterate"
+    },
+    {
+      "description": "Уничтожьте бойца и верните его прикрепления, чтобы сохранить его точную копию в месте силы до конца раунда.",
+      "name": "Усыпление",
+      "nameRef": "Sleep"
+    },
+    {
+      "description": "Замешайте карту в колоду ее игрока и снизьте ее стоимость на 1.",
+      "name": "Порыв",
+      "nameRef": "Updraft"
+    },
+    {
+      "description": "Столько единиц урона этот боец сможет выдержать. Если показатель дойдет до 0, боец умрет.",
+      "name": "Здоровье",
+      "nameRef": "Health"
+    },
+    {
+      "description": "Выберите один из двух случайных вариантов в сокращенном наборе снаряжения и снарядите им союзника. Если союзника сыграли не из руки, вместо этого он получит случайное снаряжение.",
+      "name": "Импровизация",
+      "nameRef": "Improvise"
+    },
+    {
+      "description": "Столько единиц урона боец наносит за один удар.",
+      "name": "Сила",
+      "nameRef": "Power"
+    },
+    {
+      "description": "В начале раунда у карты активируется Прилив, если вы разыграли 2+ заклинания или способности в последнем раунде.",
+      "name": "Прилив",
+      "nameRef": "Flow"
+    },
+    {
+      "description": "Этот эффект сработает, когда боец пойдет в атаку.",
+      "name": "Атака",
+      "nameRef": "Attack"
+    },
+    {
+      "description": "Усиление – это увеличение силы или здоровья либо добавление нового навыка.",
+      "name": "Усилено",
+      "nameRef": "Buffed"
+    },
+    {
+      "description": "Украденные вражеские карты или точные копии вражеских карт.",
+      "name": "Похищение",
+      "nameRef": "Stolen"
+    },
+    {
+      "description": "Увеличьте накапливаемые полезные навыки союзников или накапливаемые вредные врагов.",
+      "name": "Мотивация",
+      "nameRef": "Boost"
+    },
+    {
+      "description": "Этот чемпион как бы заменяет собой один из регионов колоды. При сборке вы можете добавлять указанные в Истоках карты вне зависимости от их региона. Кроме того, у Истоков может быть эффект, срабатывающий в начале игры.",
+      "name": "Исток",
+      "nameRef": "Origin"
+    },
+    {
+      "description": "Этот эффект сработает, когда боец попытается нанести урон с помощью параметра силы в ходе сражения или заклинанием. Бойцы с силой 0 не могут нанести удар.",
+      "name": "Удар",
+      "nameRef": "Strike"
+    },
+    {
+      "description": "За каждого союзника, выбранного целью, призовите эфемерного бойца с 1|1. Скопируйте на него одухотворенное заклинание.",
+      "name": "Одухотворение",
+      "nameRef": "Animate"
+    },
+    {
+      "description": "Срабатывает, когда боец наносит удар по вражескому нексусу.",
+      "name": "Удар по нексусу",
+      "nameRef": "NexusStrike"
+    },
+    {
+      "description": "Боец получает бонус Укрепления, если его сила не ниже заявленного значения.",
+      "name": "Укрепление",
+      "nameRef": "Empowered"
+    },
+    {
+      "description": "Срабатывает, если союзники нанесли 5+ ед. урона как минимум 4 раза за игру.",
+      "name": "Репутация",
+      "nameRef": "Reputation"
+    },
+    {
+      "description": "Снарядив бойца Предметом, вы обеспечиваете бойцу заявленные бонусы. Если боец покидает игру, Предмет вернется к вам в руку. Вы можете сыграть каждый Предмет не более 1 раза за раунд.",
+      "name": "Снарядить",
+      "nameRef": "Equip"
+    },
+    {
+      "description": "Разыграв заклинание, создайте в руке его мимолетную копию дороже на 1.",
+      "name": "Повторное заклинание",
+      "nameRef": "Recast"
+    },
+    {
+      "description": "Этот эффект сработает, когда начнется раунд.",
+      "name": "Начало раунда",
+      "nameRef": "RoundStart"
+    },
+    {
+      "description": "Этот эффект похож на заклинание, и противник может на него отреагировать. Это стихия!",
+      "name": "Стихийная способность",
+      "nameRef": "ElementalSkill"
+    },
+    {
+      "description": "Получите усиление в начале матча благодаря этому эффекту.",
+      "name": "Сила",
+      "nameRef": "PathPower"
+    },
+    {
+      "description": "Тот, против кого вы играете на Пути чемпионов.",
+      "name": "Оппонент",
+      "nameRef": "Foe"
+    },
+    {
+      "description": "Даруйте союзнику +1|+1. Если союзник снаряжен, вместо этого даруйте то же самое его предмету.",
+      "name": "Кузница",
+      "nameRef": "Forge"
+    },
+    {
+      "description": "Этот эффект сработает, когда вы сыграете этого бойца из руки.",
+      "name": "Разыграть карту",
+      "nameRef": "Play"
+    },
+    {
+      "description": "На поле боя, в руке, в колоде, в сбросе и даже если карта призвана или создана позже.",
+      "name": "Везде",
+      "nameRef": "Everywhere"
+    },
+    {
+      "description": "Счетчик места силы отсчитывает соответствующее количество раундов.",
+      "name": "Продвижение",
+      "nameRef": "Advance"
+    },
+    {
+      "description": "Начало раунда: число на счетчике уменьшается на 1. Когда отсчет дойдет до 0, активируйте эффект отсчета, а затем разрушьте меня.",
+      "name": "Отсчет",
+      "nameRef": "Countdown"
+    },
+    {
+      "description": "Если у вас нет жетона атаки, получите его. Вы сможете атаковать в этом раунде.",
+      "name": "Рвение",
+      "nameRef": "Rally"
+    },
+    {
+      "description": "Вы сражаете бойца, если убиваете врага или союзника ударом, смертоносным эффектом или нанося ему смертельный урон. Гибель в силу Эфемерности не учитывается.",
+      "name": "Сразить",
+      "nameRef": "Slay"
+    },
+    {
+      "description": "Снизьте стоимость Каналов бури в вашей руке на 1.",
+      "name": "Надвигающаяся буря",
+      "nameRef": "GatherStorm"
+    },
+    {
+      "description": "Удалите все навыки, умения и действующие эффекты. Не влияет на урон и подтип.",
+      "name": "Безмолвие",
+      "nameRef": "Silence"
+    },
+    {
+      "description": "Стоимость карты снизится, когда вы сгустите бурю.",
+      "name": "Канал бури",
+      "nameRef": "StormTarget"
+    },
+    {
+      "description": "Создайте в руке 1 из 3 случайно предложенных карт.",
+      "name": "Воплощение",
+      "nameRef": "Manifest"
+    },
+    {
+      "description": "Можно разыграть скрытно, если у вас нет других скрытых союзников с Засадой. Скрытые союзники имеют стоимость 2 и характеристики 2|2. Вы можете выплатить стоимость Засады скрытого союзника, чтобы превратить его в соответствующую базовую карту.",
+      "name": "Засада",
+      "nameRef": "Ambush"
+    },
+    {
+      "description": "Превратите союзников, снаряженных снаряжением даркинов, в соответствующих бойцов-даркинов. Если среди них чемпионы, они повышают свой уровень.",
+      "name": "Ассимиляция",
+      "nameRef": "Assimilate"
+    },
+    {
+      "description": "Есть шанс нанести двойной урон.",
+      "name": "Критический удар",
+      "nameRef": "CriticalStrike"
+    },
+    {
+      "description": "Выберите одну из трех карт из вашей колоды. Положите эту карту сверху, а остальные поместите в колоду.",
+      "name": "Предсказание",
+      "nameRef": "Predict"
+    },
+    {
+      "description": "Если у вас осталось место, украдите вражеского бойца. В конце раунда верните бойца. Если места у противника не осталось, верните бойца в его руку.",
+      "name": "Очарование",
+      "nameRef": "Charm"
+    }
+  ],
+  "keywords": [
+    {
+      "description": "Если цели было нанесено больше урона, чем нужно для ее убийства, оставшаяся часть наносится вражескому нексусу.",
+      "name": "Пробивание",
+      "nameRef": "SpellOverwhelm"
+    },
+    {
+      "description": "Можно разыграть в любой момент своего хода. Срабатывает мгновенно; потом можно продолжать разыгрывать карты.",
+      "name": "Взрывное",
+      "nameRef": "Burst"
+    },
+    {
+      "description": "Начало раунда: число на счетчике уменьшается на 1. Когда отсчет дойдет до 0, активируйте эффект отсчета, а затем разрушьте меня.",
+      "name": "Отсчет",
+      "nameRef": "Countdown"
+    },
+    {
+      "description": "Этот эффект сработает, когда вы сыграете этого бойца из руки.",
+      "name": "Разыграть карту",
+      "nameRef": "PlaySkillMark"
+    },
+    {
+      "description": "Места силы занимают одну ячейку на поле. Они не могут атаковать, блокировать или получать урон.",
+      "name": "Место силы",
+      "nameRef": "LandmarkVisualOnly"
+    },
+    {
+      "description": "Плененная карта удаляется из игры. Она возвращается, когда пленивший ее боец покидает розыгрыш.",
+      "name": "Пленение",
+      "nameRef": "Capture"
+    },
+    {
+      "description": "Этот эффект сработает, когда боец пойдет в атаку.",
+      "name": "Атака",
+      "nameRef": "AttackSkillMark"
+    },
+    {
+      "description": "Эффект срабатывает 1 раз за раунд. При активации разыграйте способность текущего действия медленно, затем превратите меня в следующее действие.",
+      "name": "История: Медленное",
+      "nameRef": "Story:Slow"
+    },
+    {
+      "description": "",
+      "name": "Шурима",
+      "nameRef": "Shurima"
+    },
+    {
+      "description": "Прикрепите меня к союзнику, чтобы дать ему мои характеристики и навыки на время прикрепления. Когда этот союзник покинет поле боя, верните меня.",
+      "name": "Прикрепление",
+      "nameRef": "Attach"
+    },
+    {
+      "description": "Эффект срабатывает 1 раз за раунд. При активации разыграйте способность текущего действия мгновенно, затем превратите меня в следующее действие.",
+      "name": "История: Мгновенное",
+      "nameRef": "Story:Focus"
+    },
+    {
+      "description": "",
+      "name": "Ноксус",
+      "nameRef": "Noxus"
+    },
+    {
+      "description": "Карты с навыком \"Мимолетность\" сбрасываются из руки в конце раунда.",
+      "name": "Мимолетность",
+      "nameRef": "Fleeting"
+    },
+    {
+      "description": "Этот эффект похож на заклинание, и противник может на него отреагировать. Это стихия!",
+      "name": "Стихийная способность",
+      "nameRef": "ElementalSkill"
+    },
+    {
+      "description": "Missing Translation",
+      "name": "Missing Translation",
+      "nameRef": "ClobberNoEmptySlotRequirement"
+    },
+    {
+      "description": "Вытяните со дна колоды противника карту, не являющуюся чемпионом.",
+      "name": "Кража",
+      "nameRef": "Nab"
+    },
+    {
+      "description": "Можно разыграть, пока не начался бой, или если на поле боя не выложены другие заклинания или способности. Срабатывает мгновенно; потом можно продолжать разыгрывать карты.",
+      "name": "Мгновенное",
+      "nameRef": "Focus"
+    },
+    {
+      "description": "Увеличив максимальный запас маны до 10 ед., вы получаете Просветление.",
+      "name": "Просветление",
+      "nameRef": "Enlightened"
+    },
+    {
+      "description": "Создайте в руке одно из 3 творений небес на выбор.",
+      "name": "Зов",
+      "nameRef": "Invoke"
+    },
+    {
+      "description": "В начале раунда у карты активируется Прилив, если вы разыграли 2+ заклинания или способности в последнем раунде.",
+      "name": "Прилив",
+      "nameRef": "Flow"
+    },
+    {
+      "description": "Прикрепляется к другой карте в колоде. Эффект срабатывает, когда эту карту вытягивают.",
+      "name": "Поощрение",
+      "nameRef": "Boon"
+    },
+    {
+      "description": "Прикрепляется к другой карте в колоде. Эффект срабатывает, когда эту карту вытягивают.",
+      "name": "Ловушка",
+      "nameRef": "Autoplay"
+    },
+    {
+      "description": "Восстанавливает вашему нексусу здоровье в размере нанесенного урона.",
+      "name": "Истощение",
+      "nameRef": "Drain"
+    },
+    {
+      "description": "Эти способности начинают действовать после смерти бойца.",
+      "name": "Предсмертный вздох",
+      "nameRef": "LastBreath"
+    },
+    {
+      "description": "",
+      "name": "Демасия",
+      "nameRef": "Demacia"
+    },
+    {
+      "description": "Если это условие выполняется, то чемпион на поле боя повышает свой уровень везде. Некоторые чемпионы должны находиться на поле боя, чтобы видеть, как приближается выполнение их условия.",
+      "name": "Новый уровень",
+      "nameRef": "LevelUp"
+    },
+    {
+      "description": "",
+      "name": "Бандл Сити",
+      "nameRef": "BandleCity"
+    },
+    {
+      "description": "Можно разыграть в любой момент своего хода. Срабатывает после того, как вашему противнику дается возможность отреагировать.",
+      "name": "Быстрое",
+      "nameRef": "Fast"
+    },
+    {
+      "description": "",
+      "name": "Билджвотер",
+      "nameRef": "Bilgewater"
+    },
+    {
+      "description": "",
+      "name": "Рунтерра",
+      "nameRef": "Runeterra"
+    },
+    {
+      "description": "Возвращает бойца в руку и снимает все наложенные на него эффекты.",
+      "name": "Возвращение",
+      "nameRef": "Recall"
+    },
+    {
+      "description": "Боец с самым низким показателем силы. Если у двух или более бойцов эти показатели равны, сравнивается здоровье, а затем – стоимость.",
+      "name": "Слабейший",
+      "nameRef": "Weakest"
+    },
+    {
+      "description": "Если атакует боец поддержки, боец справа от него получает усиление.",
+      "name": "Поддержка",
+      "nameRef": "Support"
+    },
+    {
+      "description": "Можно разыграть, пока не начался бой, или если на поле боя не выложены другие заклинания или способности. Срабатывает после того, как вашему противнику дается возможность отреагировать.",
+      "name": "Медленное",
+      "nameRef": "Slow"
+    },
+    {
+      "description": "Эти способности начинают действовать, когда у вас срабатывает заклинание.",
+      "name": "Чары",
+      "nameRef": "Imbue"
+    },
+    {
+      "description": "",
+      "name": "Таргон",
+      "nameRef": "MtTargon"
+    },
+    {
+      "description": "",
+      "name": "Сумрачные острова",
+      "nameRef": "ShadowIsles"
+    },
+    {
+      "description": "Missing Translation",
+      "name": "Missing Translation",
+      "nameRef": "AuraVisualFakeKeyword"
+    },
+    {
+      "description": "Снарядите бойца, чтобы обеспечить ему заявленные бонусы. Если боец покидает игру, снаряжение вернется к вам в руку. Вы можете сыграть каждое снаряжение не более 1 раза за раунд.",
+      "name": "Снаряжение",
+      "nameRef": "Equipment"
+    },
+    {
+      "description": "",
+      "name": "Иония",
+      "nameRef": "Ionia"
+    },
+    {
+      "description": "Вы получите бонус, если это НЕ первая карта, которую вы сыграли в раунде.",
+      "name": "Ночь",
+      "nameRef": "Nightfall"
+    },
+    {
+      "description": "",
+      "name": "Пилтовер и Заун",
+      "nameRef": "PiltoverZaun"
+    },
+    {
+      "description": "",
+      "name": "Фрельйорд",
+      "nameRef": "Freljord"
+    },
+    {
+      "description": "Призвав меня, восполните<br>1 ед. маны заклинаний.",
+      "name": "Эзотерика",
+      "nameRef": "Attune"
+    },
+    {
+      "description": "Вы получите бонус, если это первая карта, которую вы сыграли в раунде.",
+      "name": "День",
+      "nameRef": "Daybreak"
+    },
+    {
+      "description": "Missing Translation",
+      "name": "Missing Translation",
+      "nameRef": "SilenceIndividualKeyword"
+    },
+    {
+      "description": "Этот эффект похож на заклинание, и противник может на него отреагировать.",
+      "name": "Способность",
+      "nameRef": "Skill"
+    },
+    {
+      "description": "Если вы нанесли урон вражескому нексусу в этом раунде и разыгрываете карту с навыком \"Разграбление\", эта способность активируется.",
+      "name": "Разграбление",
+      "nameRef": "Plunder"
+    },
+    {
+      "description": "Атакующий наносит урон ДО блокирующего его бойца, а потом ЕЩЕ РАЗ одновременно с ним.",
+      "name": "Двойная атака",
+      "nameRef": "DoubleStrike"
+    },
+    {
+      "description": "Атакующий враг может выбрать этого бойца, и тому придется блокировать.",
+      "name": "Уязвимость",
+      "nameRef": "Vulnerable"
+    },
+    {
+      "description": "Можно заблокировать только бойцом с навыком \"Изворотливость\".",
+      "name": "Изворотливость",
+      "nameRef": "Elusive"
+    },
+    {
+      "description": "Удаляет бойца из боя. Он не может атаковать или блокировать до конца раунда.",
+      "name": "Оглушение",
+      "nameRef": "Stun"
+    },
+    {
+      "description": "Оказывает отрицательный эффект, пока находится в руке. При неоднократном применении одного и того же проклятия к одной цели его эффект и стоимость увеличиваются. Не может быть целью в руке.",
+      "name": "Проклятие",
+      "nameRef": "Curse"
+    },
+    {
+      "description": "В каждом раунде, когда меня впервые выбирает целью союзная карта, даруйте мне +1|+1.",
+      "name": "Избранный",
+      "nameRef": "Fated"
+    },
+    {
+      "description": "Может блокировать изворотливых бойцов",
+      "name": "Бдительность",
+      "nameRef": "Sharpsight"
+    },
+    {
+      "description": "Когда я убиваю бойца, даруйте мне +1|+1.",
+      "name": "Ярость",
+      "nameRef": "Fury"
+    },
+    {
+      "description": "Блокирует следующий урон, получаемый целью. Действует до конца раунда.",
+      "name": "Щит",
+      "nameRef": "Barrier"
+    },
+    {
+      "description": "Не может ни атаковать, ни блокировать.",
+      "name": "Неподвижность",
+      "nameRef": "Immobile"
+    },
+    {
+      "description": "После моей гибели давайте своему первому атакующему союзнику +1|+0 до конца раунда. Эффект действует до конца игры.",
+      "name": "Благой",
+      "nameRef": "Hallowed"
+    },
+    {
+      "description": "Я получаю +2|+2 после того, как вы сыграете союзников с 6+ другими уникальными полезными навыками в этом матче.",
+      "name": "Эволюция",
+      "nameRef": "Evolve"
+    },
+    {
+      "description": "Уменьшите силу бойца до 0 до конца раунда. В дальнейшем параметр можно изменить.",
+      "name": "Заморозка",
+      "nameRef": "Frostbite"
+    },
+    {
+      "description": "Весь урон, который я наношу блокирующему меня бойцу сверх его запаса здоровья, переносится на вражеский нексус.",
+      "name": "Пробивание",
+      "nameRef": "Overwhelm"
+    },
+    {
+      "description": "Атакуя, наносит удар прежде блокирующего бойца.",
+      "name": "Быстрая атака",
+      "nameRef": "QuickStrike"
+    },
+    {
+      "description": "У этого бойца +1|+1. Заряды навыка могут накапливаться.",
+      "name": "Мужество",
+      "nameRef": "Spirit"
+    },
+    {
+      "description": "Получает на 1 ед. урона меньше из всех источников.",
+      "name": "Стойкость",
+      "nameRef": "Tough"
+    },
+    {
+      "description": "Восстанавливает все недостающее здоровье в конце каждого раунда.",
+      "name": "Восстановление",
+      "nameRef": "Regeneration"
+    },
+    {
+      "description": "Удалите описание и все навыки бойца.",
+      "name": "Безмолвие",
+      "nameRef": "Silenced"
+    },
+    {
+      "description": "Отменяет следующее вражеское заклинание или способность, которые должны на меня подействовать.",
+      "name": "Щит от магии",
+      "nameRef": "SpellShield"
+    },
+    {
+      "description": "Нанося урон, этот боец восстанавливает своему нексусу столько же единиц здоровья.",
+      "name": "Вампиризм",
+      "nameRef": "Lifesteal"
+    },
+    {
+      "description": "У этого бойца -1|-1. Заряды навыка могут накапливаться.",
+      "name": "Безысходность",
+      "nameRef": "Gloom"
+    },
+    {
+      "description": "Сыграв созданную карту, даруйте мне +1|+0.",
+      "name": "Улучшение",
+      "nameRef": "Augment"
+    },
+    {
+      "description": "Совершая удар во время атаки, наносит 1 ед. урона вражескому нексусу. Эффект может накапливаться.",
+      "name": "Таран",
+      "nameRef": "Impact"
+    },
+    {
+      "description": "В каждом раунде после первой атаки, проведенной только разведчиками, готовьтесь атаковать.",
+      "name": "Разведка",
+      "nameRef": "Scout"
+    },
+    {
+      "description": "Этот боец умирает в конце раунда или когда наносит удар.",
+      "name": "Эфемерность",
+      "nameRef": "Ephemeral"
+    },
+    {
+      "description": "Если я нахожусь наверху колоды, когда вы атакуете, я охочусь, даруя другим союзным Охотникам везде +1|+0. Эффект срабатывает 1 раз за раунд.",
+      "name": "Охота",
+      "nameRef": "Lurker"
+    },
+    {
+      "description": "Я наношу урон, равный показателю здоровья, а не силы.",
+      "name": "Громадный",
+      "nameRef": "Formidable"
+    },
+    {
+      "description": "Когда этот боец умрет в следующий раз, лишите его Посмертия и воскресите его оглушенным с 1 ед. здоровья.",
+      "name": "Посмертие",
+      "nameRef": "Deathless"
+    },
+    {
+      "description": "Могут блокировать только противники со здоровьем 3 или выше.",
+      "name": "Вспыльчивость",
+      "nameRef": "Brash"
+    },
+    {
+      "description": "Может выбирать, какой вражеский боец блокирует.",
+      "name": "Выбор противника",
+      "nameRef": "Challenger"
+    },
+    {
+      "description": "Могут блокировать только противники с силой 3 или выше.",
+      "name": "Устрашение",
+      "nameRef": "Fearsome"
+    },
+    {
+      "description": "",
+      "name": "Не может блокировать",
+      "nameRef": "CantBlock"
+    },
+    {
+      "description": "",
+      "name": "Глубина",
+      "nameRef": "Deep"
+    }
+  ],
+  "regions": [
+    {
+      "abbreviation": "NX",
+      "iconAbsolutePath": "http://dd.b.pvp.net/7_10_0/core/ru_ru/img/regions/icon-noxus.png",
+      "name": "Ноксус",
+      "nameRef": "Noxus"
+    },
+    {
+      "abbreviation": "ELD",
+      "iconAbsolutePath": "http://dd.b.pvp.net/7_10_0/core/ru_ru/img/regions/icon-elderdragon.png",
+      "name": "Старший дракон",
+      "nameRef": "ElderDragon"
+    },
+    {
+      "abbreviation": "RYZE",
+      "iconAbsolutePath": "http://dd.b.pvp.net/7_10_0/core/ru_ru/img/regions/icon-ryze.png",
+      "name": "Райз",
+      "nameRef": "Ryze"
+    },
+    {
+      "abbreviation": "Jhin",
+      "iconAbsolutePath": "http://dd.b.pvp.net/7_10_0/core/ru_ru/img/regions/icon-jhin.png",
+      "name": "Джин",
+      "nameRef": "Jhin"
+    },
+    {
+      "abbreviation": "Varus",
+      "iconAbsolutePath": "http://dd.b.pvp.net/7_10_0/core/ru_ru/img/regions/icon-varus.png",
+      "name": "Варус",
+      "nameRef": "Varus"
+    },
+    {
+      "abbreviation": "Aatrox",
+      "iconAbsolutePath": "http://dd.b.pvp.net/7_10_0/core/ru_ru/img/regions/icon-aatrox.png",
+      "name": "Атрокс",
+      "nameRef": "Aatrox"
+    },
+    {
+      "abbreviation": "Neeko",
+      "iconAbsolutePath": "http://dd.b.pvp.net/7_10_0/core/ru_ru/img/regions/icon-neeko.png",
+      "name": "Нико",
+      "nameRef": "Neeko"
+    },
+    {
+      "abbreviation": "Jax",
+      "iconAbsolutePath": "http://dd.b.pvp.net/7_10_0/core/ru_ru/img/regions/icon-jax.png",
+      "name": "Джакс",
+      "nameRef": "Jax"
+    },
+    {
+      "abbreviation": "Kayn",
+      "iconAbsolutePath": "http://dd.b.pvp.net/7_10_0/core/ru_ru/img/regions/icon-kayn.png",
+      "name": "Каин",
+      "nameRef": "Kayn"
+    },
+    {
+      "abbreviation": "POROKING",
+      "iconAbsolutePath": "http://dd.b.pvp.net/7_10_0/core/ru_ru/img/regions/icon-poroking.png",
+      "name": "Король поро",
+      "nameRef": "PoroKing"
+    },
+    {
+      "abbreviation": "Evelynn",
+      "iconAbsolutePath": "http://dd.b.pvp.net/7_10_0/core/ru_ru/img/regions/icon-evelynn.png",
+      "name": "Эвелинн",
+      "nameRef": "Evelynn"
+    },
+    {
+      "abbreviation": "Bard",
+      "iconAbsolutePath": "http://dd.b.pvp.net/7_10_0/core/ru_ru/img/regions/icon-bard.png",
+      "name": "Бард",
+      "nameRef": "Bard"
+    },
+    {
+      "abbreviation": "DE",
+      "iconAbsolutePath": "http://dd.b.pvp.net/7_10_0/core/ru_ru/img/regions/icon-demacia.png",
+      "name": "Демасия",
+      "nameRef": "Demacia"
+    },
+    {
+      "abbreviation": "RU",
+      "iconAbsolutePath": "http://dd.b.pvp.net/7_10_0/core/ru_ru/img/regions/icon-runeterra.png",
+      "name": "Рунтерра",
+      "nameRef": "Runeterra"
+    },
+    {
+      "abbreviation": "FR",
+      "iconAbsolutePath": "http://dd.b.pvp.net/7_10_0/core/ru_ru/img/regions/icon-freljord.png",
+      "name": "Фрельйорд",
+      "nameRef": "Freljord"
+    },
+    {
+      "abbreviation": "SI",
+      "iconAbsolutePath": "http://dd.b.pvp.net/7_10_0/core/ru_ru/img/regions/icon-shadowisles.png",
+      "name": "Сумрачные острова",
+      "nameRef": "ShadowIsles"
+    },
+    {
+      "abbreviation": "MT",
+      "iconAbsolutePath": "http://dd.b.pvp.net/7_10_0/core/ru_ru/img/regions/icon-targon.png",
+      "name": "Таргон",
+      "nameRef": "Targon"
+    },
+    {
+      "abbreviation": "IO",
+      "iconAbsolutePath": "http://dd.b.pvp.net/7_10_0/core/ru_ru/img/regions/icon-ionia.png",
+      "name": "Иония",
+      "nameRef": "Ionia"
+    },
+    {
+      "abbreviation": "SH",
+      "iconAbsolutePath": "http://dd.b.pvp.net/7_10_0/core/ru_ru/img/regions/icon-shurima.png",
+      "name": "Шурима",
+      "nameRef": "Shurima"
+    },
+    {
+      "abbreviation": "BW",
+      "iconAbsolutePath": "http://dd.b.pvp.net/7_10_0/core/ru_ru/img/regions/icon-bilgewater.png",
+      "name": "Билджвотер",
+      "nameRef": "Bilgewater"
+    },
+    {
+      "abbreviation": "PZ",
+      "iconAbsolutePath": "http://dd.b.pvp.net/7_10_0/core/ru_ru/img/regions/icon-piltoverzaun.png",
+      "name": "Пилтовер и Заун",
+      "nameRef": "PiltoverZaun"
+    },
+    {
+      "abbreviation": "BC",
+      "iconAbsolutePath": "http://dd.b.pvp.net/7_10_0/core/ru_ru/img/regions/icon-bandlecity.png",
+      "name": "Бандл Сити",
+      "nameRef": "BandleCity"
+    },
+    {
+      "abbreviation": "SP",
+      "iconAbsolutePath": "http://dd.b.pvp.net/7_10_0/core/ru_ru/img/regions/icon-spiritblossom.png",
+      "name": "Праздник цветения",
+      "nameRef": "SpiritBlossom"
+    }
+  ],
+  "spellSpeeds": [
+    {
+      "name": "Медленное",
+      "nameRef": "Slow"
+    },
+    {
+      "name": "Взрывное",
+      "nameRef": "Burst"
+    },
+    {
+      "name": "Быстрое",
+      "nameRef": "Fast"
+    }
+  ],
+  "rarities": [
+    {
+      "name": "ОБЫЧНОЕ",
+      "nameRef": "Common"
+    },
+    {
+      "name": "РЕДКОЕ",
+      "nameRef": "Rare"
+    },
+    {
+      "name": "ЭПИЧЕСКОЕ",
+      "nameRef": "Epic"
+    },
+    {
+      "name": "Чемпион",
+      "nameRef": "Champion"
+    },
+    {
+      "name": "Нет",
+      "nameRef": "None"
+    }
+  ],
+  "sets": [
+    {
+      "iconAbsolutePath": "http://dd.b.pvp.net/7_10_0/core/ru_ru/img/sets/set3_crispmip.png",
+      "name": "Зов Горы",
+      "nameRef": "Set3"
+    },
+    {
+      "iconAbsolutePath": "http://dd.b.pvp.net/7_10_0/core/ru_ru/img/sets/set5_crispmip.png",
+      "name": "Гости из бандлового леса",
+      "nameRef": "Set5"
+    },
+    {
+      "iconAbsolutePath": "http://dd.b.pvp.net/7_10_0/core/ru_ru/img/sets/set1_crispmip.png",
+      "name": "Основы",
+      "nameRef": "Set1"
+    },
+    {
+      "iconAbsolutePath": "http://dd.b.pvp.net/7_10_0/core/ru_ru/img/sets/set2_crispmip.png",
+      "name": "Прилив",
+      "nameRef": "Set2"
+    },
+    {
+      "iconAbsolutePath": "http://dd.b.pvp.net/7_10_0/core/ru_ru/img/sets/set6ab_crispmip.png",
+      "name": "Странники",
+      "nameRef": "Set6"
+    },
+    {
+      "iconAbsolutePath": "http://dd.b.pvp.net/7_10_0/core/ru_ru/img/sets/set4_crispmip.png",
+      "name": "Империи вознесшихся",
+      "nameRef": "Set4"
+    },
+    {
+      "iconAbsolutePath": "http://dd.b.pvp.net/7_10_0/core/ru_ru/img/sets/set9_crispmip.png",
+      "name": "Тропы под светом грез",
+      "nameRef": "Set9"
+    },
+    {
+      "iconAbsolutePath": "http://dd.b.pvp.net/7_10_0/core/ru_ru/img/sets/set7_crispmip.png",
+      "name": "Слава в Навори",
+      "nameRef": "Set7"
+    },
+    {
+      "iconAbsolutePath": "http://dd.b.pvp.net/7_10_0/core/ru_ru/img/sets/set8_crispmip.png",
+      "name": "Судьбоносное путешествие",
+      "nameRef": "Set8"
+    },
+    {
+      "iconAbsolutePath": "http://dd.b.pvp.net/7_10_0/core/ru_ru/img/sets/set7b_crispmip.png",
+      "name": "Сердце Охотницы",
+      "nameRef": "Set7b"
+    },
+    {
+      "iconAbsolutePath": "http://dd.b.pvp.net/7_10_0/core/ru_ru/img/sets/setevent_crispmip.png",
+      "name": "События",
+      "nameRef": "SetEvent"
+    },
+    {
+      "iconAbsolutePath": "http://dd.b.pvp.net/7_10_0/core/ru_ru/img/sets/set6cde_crispmip.png",
+      "name": "Сага о даркинах",
+      "nameRef": "Set6cde"
+    }
+  ],
+  "formats": [
+    {
+      "iconAbsolutePath": "http://dd.b.pvp.net/7_10_0/core/ru_ru/img/formats/queue_select_standard_toggle_active.png",
+      "name": "Стандартный",
+      "nameRef": "client_Formats_Standard_name"
+    },
+    {
+      "iconAbsolutePath": null,
+      "name": "Бесповторные",
+      "nameRef": "client_Deckbuilder_RulesFilters_Singleton"
+    },
+    {
+      "iconAbsolutePath": "http://dd.b.pvp.net/7_10_0/core/ru_ru/img/formats/queue_select_eternal_toggle_active.png",
+      "name": "Вечный",
+      "nameRef": "client_Formats_Eternal_name"
+    },
+    {
+      "iconAbsolutePath": null,
+      "name": "Только обычные",
+      "nameRef": "client_Formats_CommonsOnly_name"
+    },
+    {
+      "iconAbsolutePath": null,
+      "name": "Карты четной стоимости",
+      "nameRef": "client_Formats_EvenCostCards_name"
+    }
+  ],
+  "adventureRarities": [
+    {
+      "name": "ОБЫЧНОЕ",
+      "nameRef": "Common"
+    },
+    {
+      "name": "РЕДКОЕ",
+      "nameRef": "Rare"
+    },
+    {
+      "name": "ЭПИЧЕСКОЕ",
+      "nameRef": "Epic"
+    },
+    {
+      "name": "ЛЕГЕНДАРНОЕ",
+      "nameRef": "Legendary"
+    },
+    {
+      "name": "ОСОБОЕ",
+      "nameRef": "Special"
+    }
+  ]
+}

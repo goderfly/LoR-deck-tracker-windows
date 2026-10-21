@@ -1,0 +1,26 @@
+{
+  "scale": 0.89,
+  "opacity": 1.0,
+  "language": "ru_ru",
+  "player_overlay_visible": false,
+  "opponent_overlay_visible": false,
+  "advisor_overlay_visible": true,
+  "tooltips_enabled": true,
+  "click_through": false,
+  "locked": false,
+  "always_visible": true,
+  "opp_spell_mana": 0,
+  "player_pos": [
+    1157,
+    83
+  ],
+  "opponent_pos": [
+    29,
+    106
+  ],
+  "advisor_pos": [
+    513,
+    16
+  ],
+  "settings_pos": null
+}

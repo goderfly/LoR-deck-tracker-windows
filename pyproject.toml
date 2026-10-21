@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lor-deck-tracker"
+version = "1.0.0"
+description = "Professional Hearthstone Deck Tracker style HUD overlay for Legends of Runeterra"
+readme = "README.md"
+authors = [
+    { name = "LoR Deck Tracker Contributors" }
+]
+license = { text = "MIT" }
+requires-python = ">=3.10"
+keywords = ["legends-of-runeterra", "deck-tracker", "overlay", "pyqt6", "gaming-hud"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Win32 (MS Windows)",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Games/Entertainment",
+]
+dependencies = [
+    "PyQt6>=6.6.0,<7.0.0",
+    "requests>=2.31.0",
+    "pywin32>=306",
+    "Pillow>=10.0.0",
+]
+
+[project.optional-dependencies]
+build = [
+    "pyinstaller>=6.3.0",
+]
+
+[project.scripts]
+lor-deck-tracker = "main:main"
+
+[project.urls]
+Homepage = "https://github.com/lor-deck-tracker/lor-deck-tracker-windows"
+Repository = "https://github.com/lor-deck-tracker/lor-deck-tracker-windows"
+Issues = "https://github.com/lor-deck-tracker/lor-deck-tracker-windows/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["lor*"]

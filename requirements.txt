@@ -1,0 +1,8 @@
+# Runtime dependencies
+PyQt6>=6.6.0,<7.0.0
+requests>=2.31.0
+pywin32>=306
+Pillow>=10.0.0
+
+# Build dependencies
+pyinstaller>=6.3.0

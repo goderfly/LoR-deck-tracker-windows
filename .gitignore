@@ -1,0 +1,39 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# PyInstaller & Build artifacts
+build/
+dist/
+release/*.zip
+*.spec.bak
+
+# Windows executables (never track raw binaries in repo root)
+/*.exe
+/*.dll
+
+# User data & local settings
+data/settings.json
+data/card_images/
+data/logs/
+*.log
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+
+# Temporary files
+*.tmp
+*.part

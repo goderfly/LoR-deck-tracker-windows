@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>LoR Overlay Companion</title>
+  <style>
+    :root {
+      --bg-panel: rgba(16, 20, 28, 0.88);
+      --border-gold: #c89b3c;
+      --border-blue: #0ac8b9;
+      --text-main: #f0f4f8;
+      --text-muted: #93a3b8;
+      --mana-blue: #00b4d8;
+      --danger-red: #ef4444;
+      --warning-gold: #f59e0b;
+      --card-bg: rgba(30, 41, 59, 0.85);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    html, body {
+      background-color: #0b0e14;
+      color: var(--text-main);
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      font-size: 13px;
+    }
+
+    /* Floating Draggable Overlay Panel */
+    .overlay-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg-panel);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Drag Handle Header */
+    .panel-header {
+      padding: 8px 12px;
+      background: linear-gradient(90deg, #1e293b, #0f172a);
+      border-bottom: 1px solid rgba(200, 155, 60, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: move;
+      border-top-left-radius: 7px;
+      border-top-right-radius: 7px;
+    }
+
+    .title {
+      font-weight: 700;
+      color: var(--border-gold);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      display: inline-block;
+      box-shadow: 0 0 8px #10b981;
+    }
+
+    .status-dot.waiting {
+      background: var(--warning-gold);
+      box-shadow: 0 0 8px var(--warning-gold);
+    }
+
+    .nav-tabs {
+      display: flex;
+      background: rgba(15, 23, 42, 0.8);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 7px;
+      text-align: center;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      color: #38bdf8;
+      border-bottom: 2px solid #38bdf8;
+      background: rgba(56, 189, 248, 0.1);
+    }
+
+    .panel-body {
+      padding: 10px;
+      overflow-y: auto;
+      flex: 1;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border-gold) transparent;
+    }
+
+    /* Deck Tracker List */
+    .deck-stats {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 11px;
+      color: var(--text-muted);
+      padding: 4px 6px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 4px;
+    }
+
+    .card-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card-bg);
+      border-left: 3px solid #64748b;
+      margin-bottom: 4px;
+      padding: 5px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      transition: background 0.15s;
+    }
+
+    .card-row:hover {
+      background: rgba(51, 65, 85, 0.95);
+    }
+
+    .card-row.empty {
+      opacity: 0.35;
+      text-decoration: line-through;
+    }
+
+    .card-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .mana-cost {
+      background: var(--mana-blue);
+      color: #04121e;
+      font-weight: 800;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      flex-shrink: 0;
+    }
+
+    .card-name {
+      font-weight: 500;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card-counts {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+    }
+
+    .prob-badge {
+      color: #38bdf8;
+      font-size: 10px;
+      font-family: monospace;
+    }
+
+    .count-badge {
+      background: rgba(200, 155, 60, 0.2);
+      border: 1px solid var(--border-gold);
+      color: var(--border-gold);
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-weight: bold;
+    }
+
+    /* Threat Warnings */
+    .threat-item {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      border-left: 3px solid var(--danger-red);
+      padding: 6px 8px;
+      margin-bottom: 6px;
+      border-radius: 4px;
+    }
+
+    .threat-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+      color: #fca5a5;
+      margin-bottom: 2px;
+      font-size: 11px;
+    }
+
+    .threat-desc {
+      font-size: 11px;
+      color: #cbd5e1;
+    }
+
+    .empty-state {
+      text-align: center;
+      color: var(--text-muted);
+      padding: 30px 10px;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    /* Controls */
+    .footer-bar {
+      padding: 6px 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="overlay-container" id="panel">
+    <div class="panel-header" id="dragHeader">
+      <div class="title">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="titleText">LoR Tracker</span>
+      </div>
+      <div style="font-size: 10px; color: #94a3b8;" id="matchVersus">Waiting...</div>
+    </div>
+
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="switchTab('deck')">Колода</button>
+      <button class="tab-btn" onclick="switchTab('threats')">Угрозы врага</button>
+      <button class="tab-btn" onclick="switchTab('board')">Стол</button>
+    </div>
+
+    <div class="panel-body" id="tabContent">
+      <div id="deckTab">
+        <div class="deck-stats">
+          <span id="deckRemainingCount">Карт в колоде: 0</span>
+          <span>Шанс топдека</span>
+        </div>
+        <div id="cardsList">
+          <div class="empty-state">
+            Запусти Legends of Runeterra и начни матч против ИИ или игроков.<br>
+            Колода подтянется автоматически!
+          </div>
+        </div>
+      </div>
+
+      <div id="threatsTab" style="display: none;">
+        <div id="threatsList">
+          <div class="empty-state">
+            Здесь появятся опасные заклинания соперника, как только он покажет свои первые карты!
+          </div>
+        </div>
+      </div>
+
+      <div id="boardTab" style="display: none;">
+        <div id="boardDetails">
+          <div class="empty-state">Матч не идет.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bar">
+      <span>Auto-refresh (1s)</span>
+      <span id="clientStatus">API: 127.0.0.1:21337</span>
+    </div>
+  </div>
+
+  <script>
+    let currentTab = 'deck';
+
+    function switchTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+
+      document.getElementById('deckTab').style.display = tab === 'deck' ? 'block' : 'none';
+      document.getElementById('threatsTab').style.display = tab === 'threats' ? 'block' : 'none';
+      document.getElementById('boardTab').style.display = tab === 'board' ? 'block' : 'none';
+    }
+
+    // Polling Backend API
+    async function updateTracker() {
+      try {
+        const resp = await fetch('/api/state');
+        if (!resp.ok) return;
+        const data = await resp.json();
+        renderState(data);
+      } catch (err) {
+        document.getElementById('statusDot').className = 'status-dot waiting';
+        document.getElementById('matchVersus').innerText = 'Offline';
+      }
+    }
+
+    function renderState(data) {
+      const dot = document.getElementById('statusDot');
+      const versus = document.getElementById('matchVersus');
+      const cardsList = document.getElementById('cardsList');
+      const threatsList = document.getElementById('threatsList');
+      const boardDetails = document.getElementById('boardDetails');
+
+      if (!data || data.status === 'offline') {
+        dot.className = 'status-dot waiting';
+        versus.innerText = 'LoR не запущен';
+        return;
+      }
+
+      if (data.status !== 'in_game') {
+        dot.className = 'status-dot waiting';
+        versus.innerText = 'В лобби/меню';
+        return;
+      }
+
+      dot.className = 'status-dot';
+      versus.innerText = `${data.playerName} vs ${data.opponentName}`;
+      document.getElementById('deckRemainingCount').innerText = `Карт в колоде: ${data.totalRemaining}`;
+
+      // Render Deck
+      if (data.myDeck && data.myDeck.length > 0) {
+        let html = '';
+        for (const card of data.myDeck) {
+          const isEmpty = card.remaining === 0;
+          html += `
+            <div class="card-row ${isEmpty ? 'empty' : ''}">
+              <div class="card-left">
+                <span class="mana-cost">${card.cost}</span>
+                <span class="card-name" title="${card.name}">${card.name}</span>
+              </div>
+              <div class="card-counts">
+                <span class="prob-badge">${card.prob}%</span>
+                <span class="count-badge">${card.remaining}/${card.initial}</span>
+              </div>
+            </div>
+          `;
+        }
+        cardsList.innerHTML = html;
+      }
+
+      // Render Threats
+      if (data.threats && data.threats.length > 0) {
+        let tHtml = '';
+        for (const t of data.threats) {
+          tHtml += `
+            <div class="threat-item">
+              <div class="threat-header">
+                <span>[${t.speed}] ${t.name} (${t.cost} маны)</span>
+                <span style="color:#fbbf24;">${t.type}</span>
+              </div>
+              <div class="threat-desc">${t.warning}</div>
+            </div>
+          `;
+        }
+        threatsList.innerHTML = tHtml;
+      } else if (data.opponentRegions && data.opponentRegions.length > 0) {
+        threatsList.innerHTML = `<div class="empty-state">Регионы соперника: ${data.opponentRegions.join(', ')}.<br>Нет особых критических угроз для этого пула.</div>`;
+      } else {
+        threatsList.innerHTML = `<div class="empty-state">Соперник пока не сыграл ни одной карты региона.</div>`;
+      }
+
+      // Render Board
+      let bHtml = `
+        <div style="font-weight:600; margin-bottom:4px; color:var(--border-gold);">Рука (${data.myHand.length}):</div>
+        <div style="margin-bottom:12px; color:#cbd5e1;">${data.myHand.map(c => c.name).join(', ') || 'Пусто'}</div>
+        <div style="font-weight:600; margin-bottom:4px; color:#38bdf8;">Мой стол (${data.myBoard ? data.myBoard.length : 0}):</div>
+        <div style="margin-bottom:12px; color:#cbd5e1;">${(data.myBoard && data.myBoard.length) ? data.myBoard.map(c => c.name).join(', ') : 'Стол пуст'}</div>
+        <div style="font-weight:600; margin-bottom:4px; color:var(--danger-red);">Стол оппонента (${data.opponentBoard.length}):</div>
+        <div style="color:#cbd5e1;">${data.opponentBoard.map(c => c.name).join(', ') || 'Стол пуст'}</div>
+      `;
+      boardDetails.innerHTML = bHtml;
+    }
+
+    setInterval(updateTracker, 1000);
+    updateTracker();
+
+    // Draggable window logic inside overlay
+    const panel = document.getElementById("panel");
+    const dragHeader = document.getElementById("dragHeader");
+
+    let isDragging = false;
+    let currentX, currentY, initialX, initialY, xOffset = 0, yOffset = 0;
+
+    dragHeader.addEventListener("mousedown", dragStart);
+    document.addEventListener("mouseup", dragEnd);
+    document.addEventListener("mousemove", drag);
+
+    function dragStart(e) {
+      // Allow dragging by window title or webview
+    }
+
+    function dragEnd() {
+    }
+
+    function drag(e) {
+    }
+  </script>
+</body>
+</html>
