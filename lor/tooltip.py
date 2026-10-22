@@ -34,6 +34,15 @@ class HextechTooltip(QtWidgets.QWidget):
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_TranslucentBackground, True)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_ShowWithoutActivating, True)
 
+        # Smooth fade-in animation
+        self._opacity_effect = QtWidgets.QGraphicsOpacityEffect(self)
+        self._opacity_effect.setOpacity(0.0)
+        self.setGraphicsEffect(self._opacity_effect)
+
+        self._fade_anim = QtCore.QPropertyAnimation(self._opacity_effect, b"opacity", self)
+        self._fade_anim.setDuration(120)
+        self._fade_anim.setEasingCurve(QtCore.QEasingCurve.Type.OutCubic)
+
         self.title_text = ""
         self.body_text = ""
         self.accent_color = GOLD
@@ -91,6 +100,11 @@ class HextechTooltip(QtWidgets.QWidget):
         self.raise_()
         win32ext.keep_topmost(self)
 
+        self._fade_anim.stop()
+        self._fade_anim.setStartValue(self._opacity_effect.opacity())
+        self._fade_anim.setEndValue(1.0)
+        self._fade_anim.start()
+
         if duration_ms > 0:
             self.hide_timer.start(duration_ms)
         else:
@@ -98,6 +112,8 @@ class HextechTooltip(QtWidgets.QWidget):
 
     def hide_tip(self):
         self.hide_timer.stop()
+        self._fade_anim.stop()
+        self._opacity_effect.setOpacity(0.0)
         self.hide()
 
     def paintEvent(self, event):

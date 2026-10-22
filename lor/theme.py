@@ -214,19 +214,18 @@ def paint_panel(painter, rect, accent=GOLD, accent_side="none", alpha=1.0,
                 glow=True, brackets=True, radius_cut=10.0):
     """
     Paint the signature Hextech panel:
-    - Deep obsidian navy gradient
-    - Dark outer metallic border
+    - Deep obsidian navy gradient with subtle inner edge vignette
+    - Metallic gold multi-stop border gradient
     - Delicate inner gold filigree hairline
-    - Ornate corner brackets with rivets
-    - Zero harsh red lines or glowing red halos
+    - Ornate corner brackets with rivets and central diamond clasp
     """
     painter.setRenderHint(QtGui.QPainter.RenderHint.Antialiasing, True)
 
     path = chamfered_path(rect.adjusted(1, 1, -1, -1), radius_cut)
 
-    # 1. Subtle, warm antique gold & obsidian aura (never harsh red!)
+    # 1. Subtle, warm antique gold & obsidian aura
     if glow:
-        aura_col = qcolor(GOLD_DIM, 0.14 * alpha)
+        aura_col = qcolor(GOLD_DIM, 0.16 * alpha)
         for width in (6, 3):
             pen = QtGui.QPen(aura_col, width)
             painter.setPen(pen)
@@ -242,19 +241,32 @@ def paint_panel(painter, rect, accent=GOLD, accent_side="none", alpha=1.0,
     painter.setBrush(QtGui.QBrush(grad))
     painter.drawPath(path)
 
-    # 3. Outer metallic edge
-    pen_edge = QtGui.QPen(qcolor(PANEL_EDGE, 0.95 * alpha), 1.0)
+    # 2b. Subtle inner radial vignette for depth
+    vignette = QtGui.QRadialGradient(rect.center(), max(rect.width(), rect.height()) * 0.75)
+    vignette.setColorAt(0.0, qcolor("#000000", 0.0))
+    vignette.setColorAt(0.75, qcolor("#000000", 0.15 * alpha))
+    vignette.setColorAt(1.0, qcolor("#000000", 0.40 * alpha))
+    painter.setBrush(QtGui.QBrush(vignette))
+    painter.drawPath(path)
+
+    # 3. Outer metallic beveled edge (Gold / Bronze gradient)
+    edge_grad = QtGui.QLinearGradient(rect.topLeft(), rect.bottomLeft())
+    edge_grad.setColorAt(0.0, qcolor("#DFD1B3", 0.90 * alpha))
+    edge_grad.setColorAt(0.2, qcolor(GOLD, 0.85 * alpha))
+    edge_grad.setColorAt(0.7, qcolor(GOLD_DIM, 0.75 * alpha))
+    edge_grad.setColorAt(1.0, qcolor(GOLD_DEEP, 0.90 * alpha))
+    pen_edge = QtGui.QPen(QtGui.QBrush(edge_grad), 1.2)
     painter.setPen(pen_edge)
     painter.setBrush(QtCore.Qt.BrushStyle.NoBrush)
     painter.drawPath(path)
 
     # 4. Inner delicate gold filigree trim
     inner_path = chamfered_path(rect.adjusted(2.5, 2.5, -2.5, -2.5), max(3.0, radius_cut - 2.0))
-    pen_inner = QtGui.QPen(qcolor(GOLD, 0.32 * alpha), 1.0)
+    pen_inner = QtGui.QPen(qcolor(GOLD, 0.35 * alpha), 1.0)
     painter.setPen(pen_inner)
     painter.drawPath(inner_path)
 
-    # 5. Corner brackets with rivets
+    # 5. Corner brackets with rivets and central clasp
     if brackets:
         _paint_brackets(painter, rect.adjusted(4, 4, -4, -4), qcolor(GOLD, 0.85 * alpha))
 
@@ -276,7 +288,7 @@ def _paint_brackets(painter, rect, color):
     painter.drawLine(QtCore.QPointF(x0, y1), QtCore.QPointF(x0 + length, y1))
     painter.drawLine(QtCore.QPointF(x0, y1), QtCore.QPointF(x0, y1 - length))
     painter.drawLine(QtCore.QPointF(x1, y1), QtCore.QPointF(x1 - length, y1))
-    painter.drawLine(QtCore.QPointF(x1, y1), QtCore.QPointF(x1, y1 - length))
+    painter.drawLine(QtCore.QPointF(x1, y1), QtCore.QPointF(x1 - length, y1))
 
     # Corner filigree dots (rivets)
     painter.setPen(QtCore.Qt.PenStyle.NoPen)
@@ -285,75 +297,118 @@ def _paint_brackets(painter, rect, color):
     for cx, cy in [(x0 + 4, y0 + 4), (x1 - 4, y0 + 4), (x0 + 4, y1 - 4), (x1 - 4, y1 - 4)]:
         painter.drawEllipse(QtCore.QPointF(cx, cy), dot_r, dot_r)
 
-    # Subtle top center ornament
+    # Central ornate diamond clasps (top and bottom)
     mid_x = (x0 + x1) / 2.0
-    painter.setBrush(QtGui.QBrush(qcolor(GOLD, 0.7)))
-    painter.drawEllipse(QtCore.QPointF(mid_x, y0 + 1), 1.5, 1.5)
+    for my in (y0, y1):
+        clasp = QtGui.QPainterPath()
+        clasp.moveTo(mid_x, my - 3)
+        clasp.lineTo(mid_x + 3.5, my)
+        clasp.lineTo(mid_x, my + 3)
+        clasp.lineTo(mid_x - 3.5, my)
+        clasp.closeSubpath()
+        painter.setBrush(QtGui.QBrush(qcolor(GOLD, 0.85)))
+        painter.drawPath(clasp)
 
 
 def paint_mana_crystal(painter, center, radius, value, accent=MANA, alpha=1.0,
                         text_color="#04121E"):
-    """Faceted Hextech cyan mana crystal with glowing aura and centered cost."""
+    """Faceted Hextech cyan mana crystal with metallic gold bezel and inner caustics."""
     painter.setRenderHint(QtGui.QPainter.RenderHint.Antialiasing, True)
     path = crystal_path(center, radius)
 
-    # Outer radiant mana halo
-    halo = QtGui.QRadialGradient(center, radius * 1.8)
-    halo.setColorAt(0.0, qcolor(MANA, 0.35 * alpha))
-    halo.setColorAt(0.6, qcolor(MANA_DEEP, 0.12 * alpha))
+    # 1. Outer radiant mana halo
+    halo = QtGui.QRadialGradient(center, radius * 1.7)
+    halo.setColorAt(0.0, qcolor(MANA, 0.40 * alpha))
+    halo.setColorAt(0.55, qcolor(MANA_DEEP, 0.15 * alpha))
     halo.setColorAt(1.0, qcolor(MANA, 0.0))
     painter.setPen(QtCore.Qt.PenStyle.NoPen)
     painter.setBrush(QtGui.QBrush(halo))
-    painter.drawEllipse(center, radius * 1.8, radius * 1.8)
+    painter.drawEllipse(center, radius * 1.7, radius * 1.7)
 
-    # Faceted crystal body
+    # 2. Outer metallic bronze/gold setting bezel
+    bezel_path = crystal_path(center, radius + 1.2)
+    bezel_grad = QtGui.QLinearGradient(center.x(), center.y() - radius, center.x(), center.y() + radius)
+    bezel_grad.setColorAt(0.0, qcolor("#E6C387", alpha))
+    bezel_grad.setColorAt(0.5, qcolor(GOLD_DIM, alpha))
+    bezel_grad.setColorAt(1.0, qcolor(GOLD_DEEP, alpha))
+    painter.setPen(QtCore.Qt.PenStyle.NoPen)
+    painter.setBrush(QtGui.QBrush(bezel_grad))
+    painter.drawPath(bezel_path)
+
+    # 3. Faceted crystal body
     grad = QtGui.QLinearGradient(center.x(), center.y() - radius, center.x(), center.y() + radius)
-    grad.setColorAt(0.0, qcolor("#C5FAFF", alpha))
-    grad.setColorAt(0.30, qcolor(MANA, alpha))
-    grad.setColorAt(0.85, qcolor(MANA_DEEP, alpha))
+    grad.setColorAt(0.0, qcolor("#D6FAFF", alpha))
+    grad.setColorAt(0.25, qcolor(MANA_ELECTRIC, alpha))
+    grad.setColorAt(0.65, qcolor(MANA, alpha))
+    grad.setColorAt(0.90, qcolor(MANA_DEEP, alpha))
     grad.setColorAt(1.0, qcolor(MANA_DARK, alpha))
     painter.setBrush(QtGui.QBrush(grad))
-    painter.setPen(QtGui.QPen(qcolor("#E6FBFF", 0.95 * alpha), 1.0))
+    painter.setPen(QtGui.QPen(qcolor("#E6FBFF", 0.90 * alpha), 0.8))
     painter.drawPath(path)
 
-    # Specular upper facet
+    # 4. Specular upper facet & caustic highlight
     facet = QtGui.QPainterPath()
     facet.addPolygon(QtGui.QPolygonF([
         QtCore.QPointF(center.x() - radius * 0.45, center.y() - radius * 0.65),
         QtCore.QPointF(center.x(), center.y() - radius * 0.95),
-        QtCore.QPointF(center.x() + radius * 0.15, center.y() - radius * 0.20),
-        QtCore.QPointF(center.x() - radius * 0.35, center.y() + radius * 0.10),
+        QtCore.QPointF(center.x() + radius * 0.20, center.y() - radius * 0.25),
+        QtCore.QPointF(center.x() - radius * 0.30, center.y() + radius * 0.05),
     ]))
     painter.setPen(QtCore.Qt.PenStyle.NoPen)
-    painter.setBrush(QtGui.QBrush(qcolor("#FFFFFF", 0.45 * alpha)))
+    painter.setBrush(QtGui.QBrush(qcolor("#FFFFFF", 0.55 * alpha)))
     painter.drawPath(facet)
 
-    # Centered crystal value with drop shadow
+    # 5. Centered crystal value with soft glow shadow
     val_str = str(value)
     text_rect = QtCore.QRectF(center.x() - radius, center.y() - radius, radius * 2, radius * 2)
     f = number_font(max(7, int(radius * 0.85)), bold=True)
     painter.setFont(f)
 
-    # Shadow
-    painter.setPen(qcolor("#020810", 0.85 * alpha))
-    painter.drawText(text_rect.translated(0.8, 0.8), QtCore.Qt.AlignmentFlag.AlignCenter, val_str)
+    # Soft dark drop shadow in 4 directions
+    for dx, dy in [(-0.6, 0), (0.6, 0), (0, -0.6), (0, 0.8)]:
+        painter.setPen(qcolor("#010912", 0.85 * alpha))
+        painter.drawText(text_rect.translated(dx, dy), QtCore.Qt.AlignmentFlag.AlignCenter, val_str)
 
-    # Number
+    # Main sharp number
     painter.setPen(qcolor(text_color, alpha))
     painter.drawText(text_rect, QtCore.Qt.AlignmentFlag.AlignCenter, val_str)
 
 
 def paint_region_badge(painter, center, radius, ref, alpha=1.0):
-    """Hexagonal region badge."""
+    """Hexagonal region badge with metallic bevel and glowing core."""
     painter.setRenderHint(QtGui.QPainter.RenderHint.Antialiasing, True)
     col = region_color(ref)
     path = hex_path(center, radius, flat=False)
-    grad = QtGui.QLinearGradient(center.x(), center.y() - radius, center.x(), center.y() + radius)
-    grad.setColorAt(0.0, qcolor(col, 0.55 * alpha))
-    grad.setColorAt(1.0, qcolor(col, 0.16 * alpha))
-    painter.setPen(QtGui.QPen(qcolor(col, 0.85 * alpha), 1.0))
+
+    # Outer metallic bronze/gold setting bezel
+    outer_path = hex_path(center, radius + 1.0, flat=False)
+    bezel_grad = QtGui.QLinearGradient(center.x(), center.y() - radius, center.x(), center.y() + radius)
+    bezel_grad.setColorAt(0.0, qcolor("#EAD09C", alpha))
+    bezel_grad.setColorAt(0.5, qcolor(GOLD_DIM, alpha))
+    bezel_grad.setColorAt(1.0, qcolor(GOLD_DEEP, alpha))
+    painter.setPen(QtCore.Qt.PenStyle.NoPen)
+    painter.setBrush(QtGui.QBrush(bezel_grad))
+    painter.drawPath(outer_path)
+
+    # Inner rich gradient jewel
+    grad = QtGui.QRadialGradient(center, radius)
+    grad.setColorAt(0.0, qcolor(col, 0.90 * alpha))
+    grad.setColorAt(0.6, qcolor(col, 0.40 * alpha))
+    grad.setColorAt(1.0, qcolor("#060B12", 0.95 * alpha))
+    painter.setPen(QtGui.QPen(qcolor("#F0E6D2", 0.60 * alpha), 0.8))
     painter.setBrush(QtGui.QBrush(grad))
     painter.drawPath(path)
+
+    # Delicate inner diamond filigree
+    inner_diamond = QtGui.QPainterPath()
+    inner_diamond.moveTo(center.x(), center.y() - radius * 0.45)
+    inner_diamond.lineTo(center.x() + radius * 0.45, center.y())
+    inner_diamond.lineTo(center.x(), center.y() + radius * 0.45)
+    inner_diamond.lineTo(center.x() - radius * 0.45, center.y())
+    inner_diamond.closeSubpath()
+    painter.setPen(QtGui.QPen(qcolor("#FFFFFF", 0.65 * alpha), 0.8))
+    painter.setBrush(QtCore.Qt.BrushStyle.NoBrush)
+    painter.drawPath(inner_diamond)
 
 
 def paint_pill(painter, rect, color, text, alpha=1.0, font=None, radius=4.0):

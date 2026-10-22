@@ -150,8 +150,14 @@ class SectionTitle(QtWidgets.QWidget):
         p.drawPath(path)
 
         f = theme.header_font(METRICS(8.5), bold=True)
+        f.setLetterSpacing(QtGui.QFont.SpacingType.AbsoluteSpacing, 1.2)
         p.setFont(f)
-        p.setPen(qcolor(GOLD_BRIGHT))
+
+        # Subtle gold gradient for title typography
+        text_grad = QtGui.QLinearGradient(0, cy - 6, 0, cy + 6)
+        text_grad.setColorAt(0.0, qcolor("#FFF6E5"))
+        text_grad.setColorAt(1.0, qcolor("#C8AA6E"))
+        p.setPen(QtGui.QPen(QtGui.QBrush(text_grad), 1))
         metrics = QtGui.QFontMetrics(f)
         text_w = metrics.horizontalAdvance(self.text)
         x = r * 2 + METRICS(7)
@@ -185,8 +191,20 @@ class CardBar(QtWidgets.QWidget):
         self.card = {}
         self.code = ""
         self.hovered = False
+        self._hover_progress = 0.0
+
+        # Smooth hover transition animation (cubic easing, ~140ms)
+        self._hover_anim = QtCore.QVariantAnimation(self)
+        self._hover_anim.setDuration(140)
+        self._hover_anim.setEasingCurve(QtCore.QEasingCurve.Type.OutCubic)
+        self._hover_anim.valueChanged.connect(self._on_hover_step)
+
         self.setMouseTracking(True)
         self.setFixedHeight(METRICS(self.HEIGHT))
+
+    def _on_hover_step(self, val):
+        self._hover_progress = float(val)
+        self.update()
 
     # -- data ------------------------------------------------------------
     def set_card(self, card):
@@ -197,14 +215,20 @@ class CardBar(QtWidgets.QWidget):
     # -- interaction -----------------------------------------------------
     def enterEvent(self, event):
         self.hovered = True
-        self.update()
+        self._hover_anim.stop()
+        self._hover_anim.setStartValue(self._hover_progress)
+        self._hover_anim.setEndValue(1.0)
+        self._hover_anim.start()
         if self.on_hover:
             self.on_hover(self.code, self)
         super().enterEvent(event)
 
     def leaveEvent(self, event):
         self.hovered = False
-        self.update()
+        self._hover_anim.stop()
+        self._hover_anim.setStartValue(self._hover_progress)
+        self._hover_anim.setEndValue(0.0)
+        self._hover_anim.start()
         if self.on_hover:
             self.on_hover(None, self)
         super().leaveEvent(event)
@@ -227,16 +251,25 @@ class CardBar(QtWidgets.QWidget):
 
         # 1. Base dark obsidian tile
         bg_color = qcolor("#0A111D" if alive else "#060A12")
+        hp = self._hover_progress
         if not alive:
             border_color = qcolor(FAINT, 0.20)
         elif is_champ:
-            border_color = qcolor(GOLD, 0.75)
-        elif self.hovered:
-            border_color = qcolor(MANA, 0.85)
+            # Champions have warm luminous gold border that gets brighter on hover
+            c_alpha = 0.75 + 0.25 * hp
+            border_color = qcolor(GOLD_BRIGHT if hp > 0.5 else GOLD, c_alpha)
+        elif hp > 0.01:
+            # Smooth interpolation from dark navy edge to Hextech cyan
+            r_val = int(27 + (0 - 27) * hp)
+            g_val = int(39 + (240 - 39) * hp)
+            b_val = int(56 + (255 - 56) * hp)
+            a_val = 0.75 + 0.20 * hp
+            border_color = QtGui.QColor(r_val, g_val, b_val, int(a_val * 255))
         else:
             border_color = qcolor("#1B2738", 0.75)
 
-        p.setPen(QtGui.QPen(border_color, 1.2 if (self.hovered or is_champ) else 1.0))
+        pen_w = 1.0 + (0.4 * hp) if (alive and not is_champ) else (1.3 if is_champ else 1.0)
+        p.setPen(QtGui.QPen(border_color, pen_w))
         p.setBrush(QtGui.QBrush(bg_color))
         p.drawRoundedRect(rect, radius, radius)
 
@@ -258,19 +291,42 @@ class CardBar(QtWidgets.QWidget):
                 grad = QtGui.QLinearGradient(art_rect.left(), 0, art_rect.right(), 0)
                 grad.setColorAt(0.0, qcolor("#0A111D", 1.0))
                 grad.setColorAt(0.32, qcolor("#0A111D", 0.95))
-                grad.setColorAt(0.65, qcolor("#0A111D", 0.40))
+                grad.setColorAt(0.65, qcolor("#0A111D", 0.40 - 0.10 * hp))
                 grad.setColorAt(1.0, qcolor("#0A111D", 0.05))
                 p.setPen(QtCore.Qt.PenStyle.NoPen)
                 p.setBrush(QtGui.QBrush(grad))
                 p.drawRect(art_rect)
+
+                # Subtle luminous sheen when hovered
+                if hp > 0.01:
+                    sheen = QtGui.QLinearGradient(art_rect.left(), 0, art_rect.right(), 0)
+                    sheen.setColorAt(0.0, qcolor(MANA, 0.0))
+                    sheen.setColorAt(0.7, qcolor(MANA, 0.08 * hp))
+                    sheen.setColorAt(1.0, qcolor(MANA_ELECTRIC, 0.18 * hp))
+                    p.setBrush(QtGui.QBrush(sheen))
+                    p.drawRect(art_rect)
+
                 p.restore()
 
-        # Hover cyan accent indicator on left edge
-        if self.hovered and alive:
-            bar = QtCore.QRectF(rect.left() + 1.5, rect.top() + 4, 2.5, rect.height() - 8)
+        # Hover cyan accent indicator on left edge (smoothly animated height and alpha)
+        if hp > 0.01 and alive:
+            bar_h = (rect.height() - 8) * (0.6 + 0.4 * hp)
+            bar_y = rect.top() + (rect.height() - bar_h) / 2.0
+            bar = QtCore.QRectF(rect.left() + 1.2, bar_y, 2.5, bar_h)
             p.setPen(QtCore.Qt.PenStyle.NoPen)
-            p.setBrush(QtGui.QBrush(qcolor(MANA, 0.95)))
+            p.setBrush(QtGui.QBrush(qcolor(MANA if not is_champ else GOLD_BRIGHT, 0.95 * hp)))
             p.drawRoundedRect(bar, 1, 1)
+
+        # Champion ornate gold chevron on left edge
+        if is_champ and alive:
+            chev = QtGui.QPainterPath()
+            cy_c = self.height() / 2.0
+            chev.moveTo(rect.left() + 1.5, cy_c - 6)
+            chev.lineTo(rect.left() + 4.5, cy_c)
+            chev.lineTo(rect.left() + 1.5, cy_c + 6)
+            p.setPen(QtGui.QPen(qcolor(GOLD_BRIGHT, 0.85), 1.2))
+            p.setBrush(QtCore.Qt.BrushStyle.NoBrush)
+            p.drawPath(chev)
 
         left = METRICS(6)
         cy = self.height() / 2.0
@@ -283,21 +339,25 @@ class CardBar(QtWidgets.QWidget):
         )
         left += gem_r * 2 + METRICS(8)
 
-        # 4. Count badge (right edge)
+        # 4. Count badge (chamfered lozenge)
         badge_w = METRICS(28)
         badge = QtCore.QRectF(self.width() - badge_w - METRICS(5),
                               cy - METRICS(9), badge_w, METRICS(18))
+        badge_path = theme.chamfered_path(badge, METRICS(4))
         if alive:
             if is_champ:
-                p.setPen(QtGui.QPen(qcolor(GOLD_BRIGHT, 0.85), 1))
-                p.setBrush(QtGui.QBrush(qcolor(GOLD_DIM, 0.45)))
+                b_grad = QtGui.QLinearGradient(badge.topLeft(), badge.bottomLeft())
+                b_grad.setColorAt(0.0, qcolor(GOLD_BRIGHT, 0.9))
+                b_grad.setColorAt(1.0, qcolor(GOLD_DIM, 0.8))
+                p.setPen(QtGui.QPen(QtGui.QBrush(b_grad), 1.2))
+                p.setBrush(QtGui.QBrush(qcolor(GOLD_DEEP, 0.75)))
             else:
-                p.setPen(QtGui.QPen(qcolor(GOLD, 0.65), 1))
-                p.setBrush(QtGui.QBrush(qcolor("#101A2C", 0.80)))
+                p.setPen(QtGui.QPen(qcolor(GOLD if hp < 0.5 else MANA, 0.75), 1.0))
+                p.setBrush(QtGui.QBrush(qcolor("#0B1321", 0.90)))
         else:
             p.setPen(QtGui.QPen(qcolor(FAINT, 0.4), 1))
             p.setBrush(QtGui.QBrush(qcolor("#080D16", 0.50)))
-        p.drawRoundedRect(badge, METRICS(3.5), METRICS(3.5))
+        p.drawPath(badge_path)
         p.setFont(theme.number_font(METRICS(8.5), bold=True))
         p.setPen(qcolor(GOLD_BRIGHT if (alive and is_champ) else (GOLD_SOFT if alive else FAINT)))
         count_str = "★" if (is_champ and remaining == 1) else f"x{remaining}"
@@ -407,8 +467,20 @@ class ThreatRow(QtWidgets.QWidget):
         self.threat = {}
         self.code = ""
         self.hovered = False
+        self._hover_progress = 0.0
+
+        # Smooth hover transition
+        self._hover_anim = QtCore.QVariantAnimation(self)
+        self._hover_anim.setDuration(140)
+        self._hover_anim.setEasingCurve(QtCore.QEasingCurve.Type.OutCubic)
+        self._hover_anim.valueChanged.connect(self._on_hover_step)
+
         self.setMouseTracking(True)
         self.setFixedHeight(METRICS(self.HEIGHT))
+
+    def _on_hover_step(self, val):
+        self._hover_progress = float(val)
+        self.update()
 
     def set_threat(self, threat):
         self.threat = threat or {}
@@ -417,14 +489,20 @@ class ThreatRow(QtWidgets.QWidget):
 
     def enterEvent(self, event):
         self.hovered = True
-        self.update()
+        self._hover_anim.stop()
+        self._hover_anim.setStartValue(self._hover_progress)
+        self._hover_anim.setEndValue(1.0)
+        self._hover_anim.start()
         if self.on_hover:
             self.on_hover(self.code, self)
         super().enterEvent(event)
 
     def leaveEvent(self, event):
         self.hovered = False
-        self.update()
+        self._hover_anim.stop()
+        self._hover_anim.setStartValue(self._hover_progress)
+        self._hover_anim.setEndValue(0.0)
+        self._hover_anim.start()
         if self.on_hover:
             self.on_hover(None, self)
         super().leaveEvent(event)
@@ -443,10 +521,11 @@ class ThreatRow(QtWidgets.QWidget):
         rect = QtCore.QRectF(self.rect()).adjusted(1, 1, -1, -1)
 
         # Base tile
+        hp = self._hover_progress
         bg_a = 0.35 if now else 0.18
-        if self.hovered:
-            bg_a += 0.18
-        p.setPen(QtGui.QPen(qcolor(color, 0.70 if now else 0.25), 1.2 if (now or self.hovered) else 1.0))
+        bg_a += 0.20 * hp
+        border_a = (0.70 if now else 0.30) + 0.30 * hp
+        p.setPen(QtGui.QPen(qcolor(color, border_a), 1.0 + 0.4 * hp))
         p.setBrush(QtGui.QBrush(qcolor("#0A121F", bg_a)))
         p.drawRoundedRect(rect, METRICS(5), METRICS(5))
 

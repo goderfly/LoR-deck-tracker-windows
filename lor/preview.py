@@ -36,6 +36,15 @@ class CardPreview(QtWidgets.QWidget):
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_ShowWithoutActivating, True)
         self.setFixedSize(METRICS(520), METRICS(400))
 
+        # Smooth fade-in animation
+        self._opacity_effect = QtWidgets.QGraphicsOpacityEffect(self)
+        self._opacity_effect.setOpacity(0.0)
+        self.setGraphicsEffect(self._opacity_effect)
+
+        self._fade_anim = QtCore.QPropertyAnimation(self._opacity_effect, b"opacity", self)
+        self._fade_anim.setDuration(130)
+        self._fade_anim.setEasingCurve(QtCore.QEasingCurve.Type.OutCubic)
+
     # ------------------------------------------------------------------
     def show_card(self, code, extra=None, near_rect=None):
         card = self.card_db.get_card(code) if code else None
@@ -52,7 +61,14 @@ class CardPreview(QtWidgets.QWidget):
         self.raise_()
         win32ext.keep_topmost(self)
 
+        self._fade_anim.stop()
+        self._fade_anim.setStartValue(self._opacity_effect.opacity())
+        self._fade_anim.setEndValue(1.0)
+        self._fade_anim.start()
+
     def hide_preview(self):
+        self._fade_anim.stop()
+        self._opacity_effect.setOpacity(0.0)
         self.hide()
 
     def _place(self, near_rect):
@@ -134,37 +150,52 @@ class CardPreview(QtWidgets.QWidget):
 
         # stats
         if card.get("type") in ("Unit", "Боец") or is_champ:
-            stat_w = METRICS(48)
-            stat_h = METRICS(20)
+            medallion_r = METRICS(11)
+            cy_m = y + medallion_r
 
-            # Attack badge
-            att_rect = QtCore.QRectF(x, y, stat_w, stat_h)
-            p.setPen(QtGui.QPen(qcolor("#F5C14B", 0.6), 1))
-            p.setBrush(QtGui.QBrush(qcolor("#2B210A", 0.7)))
-            p.drawRoundedRect(att_rect, 3, 3)
+            # Attack Medallion (Solar Gold Gem with metallic rim)
+            cx_att = x + medallion_r
+            p.setPen(QtCore.Qt.PenStyle.NoPen)
+            # Outer gold rim
+            p.setBrush(QtGui.QBrush(qcolor("#D4AF37")))
+            p.drawEllipse(QtCore.QPointF(cx_att, cy_m), medallion_r, medallion_r)
+            # Inner amber jewel
+            att_grad = QtGui.QRadialGradient(QtCore.QPointF(cx_att, cy_m), medallion_r * 0.85)
+            att_grad.setColorAt(0.0, qcolor("#FFE28A"))
+            att_grad.setColorAt(0.7, qcolor("#D48806"))
+            att_grad.setColorAt(1.0, qcolor("#522802"))
+            p.setBrush(QtGui.QBrush(att_grad))
+            p.drawEllipse(QtCore.QPointF(cx_att, cy_m), medallion_r * 0.85, medallion_r * 0.85)
+            # Stat text
             p.setFont(theme.display_font(10, bold=True))
-            p.setPen(qcolor("#FFEAA7"))
-            p.drawText(att_rect, QtCore.Qt.AlignmentFlag.AlignCenter, f"⚔ {card.get('attack', 0)}")
+            p.setPen(qcolor("#FFF8DB"))
+            p.drawText(QtCore.QRectF(cx_att - medallion_r, cy_m - medallion_r, medallion_r * 2, medallion_r * 2),
+                       QtCore.Qt.AlignmentFlag.AlignCenter, str(card.get('attack', 0)))
 
-            # Health badge
-            hp_rect = QtCore.QRectF(x + stat_w + 6, y, stat_w, stat_h)
-            p.setPen(QtGui.QPen(qcolor("#FF6B7A", 0.6), 1))
-            p.setBrush(QtGui.QBrush(qcolor("#2E0B10", 0.7)))
-            p.drawRoundedRect(hp_rect, 3, 3)
-            p.setPen(qcolor("#FFCCD2"))
-            p.drawText(hp_rect, QtCore.Qt.AlignmentFlag.AlignCenter, f"❤ {card.get('health', 0)}")
+            # Health Medallion (Ruby Heart Shield with metallic rim)
+            cx_hp = cx_att + medallion_r * 2 + METRICS(10)
+            p.setPen(QtCore.Qt.PenStyle.NoPen)
+            # Outer dark crimson rim
+            p.setBrush(QtGui.QBrush(qcolor("#B82E3E")))
+            p.drawEllipse(QtCore.QPointF(cx_hp, cy_m), medallion_r, medallion_r)
+            # Inner ruby jewel
+            hp_grad = QtGui.QRadialGradient(QtCore.QPointF(cx_hp, cy_m), medallion_r * 0.85)
+            hp_grad.setColorAt(0.0, qcolor("#FF808F"))
+            hp_grad.setColorAt(0.7, qcolor("#D92538"))
+            hp_grad.setColorAt(1.0, qcolor("#4D0810"))
+            p.setBrush(QtGui.QBrush(hp_grad))
+            p.drawEllipse(QtCore.QPointF(cx_hp, cy_m), medallion_r * 0.85, medallion_r * 0.85)
+            # Stat text
+            p.setPen(qcolor("#FFF0F2"))
+            p.drawText(QtCore.QRectF(cx_hp - medallion_r, cy_m - medallion_r, medallion_r * 2, medallion_r * 2),
+                       QtCore.Qt.AlignmentFlag.AlignCenter, str(card.get('health', 0)))
 
-            y += 26
+            y += int(medallion_r * 2 + METRICS(8))
         elif card.get("cost") is not None:
-            # Spell mana badge
-            cost_rect = QtCore.QRectF(x, y, METRICS(56), METRICS(18))
-            p.setPen(QtGui.QPen(qcolor(MANA, 0.7), 1))
-            p.setBrush(QtGui.QBrush(qcolor(MANA_DARK, 0.7)))
-            p.drawRoundedRect(cost_rect, 3, 3)
-            p.setFont(theme.display_font(8.5, bold=True))
-            p.setPen(qcolor(MANA_ELECTRIC))
-            p.drawText(cost_rect, QtCore.Qt.AlignmentFlag.AlignCenter, f"МАНА: {card.get('cost', 0)}")
-            y += 24
+            # Spell mana crystal badge
+            cost_r = METRICS(9.5)
+            theme.paint_mana_crystal(p, QtCore.QPointF(x + cost_r + 2, y + cost_r), cost_r, card.get("cost", 0))
+            y += int(cost_r * 2 + METRICS(6))
 
         # regions
         refs = card.get("regionRefs") or []
