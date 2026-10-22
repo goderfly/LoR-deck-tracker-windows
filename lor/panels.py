@@ -328,8 +328,21 @@ class PlayerPanel(OverlayWindow):
         self.scroll.setFrameShape(QtWidgets.QFrame.Shape.NoFrame)
         self.scroll.setStyleSheet(f"""
             QScrollArea {{ background: transparent; border: none; }}
-            QScrollBar:vertical {{ background: rgba(0,0,0,40); width: {METRICS(5)}px; border: none; }}
-            QScrollBar::handle:vertical {{ background: {GOLD_DIM}; border-radius: 2px; min-height: 24px; }}
+            QScrollBar:vertical {{
+                background: rgba(4, 7, 13, 0.40);
+                width: {METRICS(5)}px;
+                border: none;
+                margin-left: 2px;
+                margin-right: 0px;
+            }}
+            QScrollBar::handle:vertical {{
+                background: {GOLD_DIM};
+                border-radius: 2px;
+                min-height: 24px;
+            }}
+            QScrollBar::handle:vertical:hover {{
+                background: {GOLD};
+            }}
             QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {{ height: 0; }}
         """)
         self.content = QtWidgets.QWidget()
@@ -648,13 +661,14 @@ class HandStrip(QtWidgets.QWidget):
         if self.count <= 0:
             return
 
-        card_w = METRICS(22)
+        card_w = METRICS(24)
         card_h = METRICS(32)
         gap = METRICS(3)
         cy = self.height() / 2.0
         x = METRICS(4)
 
-        for i in range(min(self.count, 11)):
+        max_show = min(self.count, 10)
+        for i in range(max_show):
             rect = QtCore.QRectF(x, cy - card_h / 2.0, card_w, card_h)
             is_mull = i < self.mulligan
             is_hover = (i == self.hovered_idx)
@@ -695,11 +709,11 @@ class HandStrip(QtWidgets.QWidget):
 
             x += card_w + gap
 
-        if self.count > 11:
+        if self.count > 10:
             p.setFont(theme.display_font(METRICS(9), bold=True))
             p.setPen(qcolor(GOLD_BRIGHT))
             p.drawText(QtCore.QRectF(x + 2, 0, METRICS(40), self.height()),
-                       QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter, f"+{self.count - 11}")
+                       QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter, f"+{self.count - 10}")
 
 
 class PlayedRow(QtWidgets.QWidget):
@@ -727,11 +741,24 @@ class PlayedRow(QtWidgets.QWidget):
         self.update()
         if self.on_hover:
             self.on_hover(self.code, self)
+        count = self.card.get("count", 1)
+        rem = max(0, 3 - count)
+        global_pos = self.mapToGlobal(QtCore.QPoint(int(self.width()), int(self.height() // 2)))
+        status_txt = f"Сыграно копий: {count} из 3.\nВ колоде противника ориентировочно осталось: ~{rem}."
+        if count >= 3:
+            status_txt += "\n✓ Угроза нейтрализована: все копии этой карты вышли!"
+        HextechTooltip.instance().show_tip(
+            self.card.get("name", "Карта"),
+            status_txt,
+            global_pos,
+            accent=VERDANT if count >= 3 else (EMBER if count == 2 else GOLD)
+        )
         super().enterEvent(e)
 
     def leaveEvent(self, e):
         self.hovered = False
         self.update()
+        HextechTooltip.instance().hide_tip()
         if self.on_hover:
             self.on_hover(None, self)
         super().leaveEvent(e)
@@ -788,24 +815,25 @@ class PlayedRow(QtWidgets.QWidget):
                                  card.get("cost", 0))
         left += gem_r * 2 + METRICS(7)
 
-        # Count & safety badge
-        badge_w = METRICS(62) if all_played else METRICS(34)
-        badge = QtCore.QRectF(self.width() - badge_w - METRICS(5), cy - METRICS(8.5),
+        # Count & safety badge (compact LoR-style)
+        badge_w = METRICS(30)
+        badge = QtCore.QRectF(self.width() - badge_w - METRICS(6), cy - METRICS(8.5),
                               badge_w, METRICS(17))
 
-        badge_col = VERDANT if all_played else (EMBER if count == 2 else GOLD_DIM)
-        p.setPen(QtGui.QPen(qcolor(badge_col, 0.85), 1))
+        badge_col = VERDANT if all_played else (EMBER if count == 2 else GOLD)
+        badge_path = theme.chamfered_path(badge, METRICS(3.5))
+        p.setPen(QtGui.QPen(qcolor(badge_col, 0.85), 1.0))
         p.setBrush(QtGui.QBrush(qcolor(badge_col, 0.20)))
-        p.drawRoundedRect(badge, METRICS(3), METRICS(3))
+        p.drawPath(badge_path)
 
-        p.setFont(theme.number_font(METRICS(7.5), bold=True))
-        p.setPen(qcolor("#D7FFE2" if all_played else (GOLD_BRIGHT if count == 2 else MUTED)))
+        p.setFont(theme.number_font(METRICS(8), bold=True))
+        p.setPen(qcolor("#D7FFE2" if all_played else (GOLD_BRIGHT if count == 2 else TEXT)))
         if all_played:
-            p.drawText(badge, QtCore.Qt.AlignmentFlag.AlignCenter, "ВСЕ 3 ВЫШЛИ")
+            p.drawText(badge, QtCore.Qt.AlignmentFlag.AlignCenter, "x3")
         elif count == 2:
-            p.drawText(badge, QtCore.Qt.AlignmentFlag.AlignCenter, "x2 (ост. 1)")
+            p.drawText(badge, QtCore.Qt.AlignmentFlag.AlignCenter, "x2")
         else:
-            p.drawText(badge, QtCore.Qt.AlignmentFlag.AlignCenter, f"x1 (ост. 2)")
+            p.drawText(badge, QtCore.Qt.AlignmentFlag.AlignCenter, "x1")
 
         # Card Name
         avail = badge.left() - left - METRICS(6)
@@ -911,8 +939,21 @@ class OpponentPanel(OverlayWindow):
         self.scroll.setFrameShape(QtWidgets.QFrame.Shape.NoFrame)
         self.scroll.setStyleSheet(f"""
             QScrollArea {{ background: transparent; border: none; }}
-            QScrollBar:vertical {{ background: rgba(0,0,0,40); width: {METRICS(5)}px; border: none; }}
-            QScrollBar::handle:vertical {{ background: {GOLD_DIM}; border-radius: 2px; min-height: 24px; }}
+            QScrollBar:vertical {{
+                background: rgba(4, 7, 13, 0.40);
+                width: {METRICS(5)}px;
+                border: none;
+                margin-left: 2px;
+                margin-right: 0px;
+            }}
+            QScrollBar::handle:vertical {{
+                background: {GOLD_DIM};
+                border-radius: 2px;
+                min-height: 24px;
+            }}
+            QScrollBar::handle:vertical:hover {{
+                background: {GOLD};
+            }}
             QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {{ height: 0; }}
         """)
         self.content = QtWidgets.QWidget()
@@ -965,7 +1006,15 @@ class OpponentPanel(OverlayWindow):
 
         self.empty_lbl.setVisible(False)
         self.scroll.setVisible(True)
-        self.opp_player.setText(state.get("opponentName", ""))
+
+        # Format opponent name nicely (clean up internal bot deck IDs like decks_badstuns_name)
+        opp_name = state.get("opponentName", "") or ""
+        if opp_name.startswith("decks_") and opp_name.endswith("_name"):
+            core_name = opp_name[len("decks_"):-len("_name")]
+            opp_name = f"Бот: {core_name.capitalize()}"
+        elif opp_name.startswith("decks_"):
+            opp_name = f"Бот: {opp_name[len('decks_'):]}"
+        self.opp_player.setText(opp_name)
 
         turn = state.get("turn", {}) or {}
         self.status.set_row("ХОД ПРОТИВНИКА", f"{turn.get('theirTurn', 2)}", EMBER)

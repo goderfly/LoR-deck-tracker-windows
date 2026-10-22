@@ -243,7 +243,8 @@ class LoRClient:
             their_drawn = MULLIGAN_CARDS + (their_turn - 1) // 2
         their_drawn = max(MULLIGAN_CARDS, their_drawn)
         revealed_total = sum(v["count"] for v in self.opp_revealed.values())
-        opp_hand = max(0, their_drawn - revealed_total)
+        # In LoR, hand size cannot exceed 10 cards.
+        opp_hand = min(10, max(0, their_drawn - revealed_total))
         return {
             "phase": self.phase,
             "ourTurn": our_turn,

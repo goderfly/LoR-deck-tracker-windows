@@ -11,16 +11,16 @@
   "always_visible": true,
   "opp_spell_mana": 0,
   "player_pos": [
-    1157,
-    83
+    91,
+    170
   ],
   "opponent_pos": [
-    29,
-    106
+    1218,
+    11
   ],
   "advisor_pos": [
-    513,
-    16
+    547,
+    14
   ],
   "settings_pos": null
 }
